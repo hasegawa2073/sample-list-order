@@ -2,6 +2,11 @@
   "name": "sample-list-order",
   "type": "module",
   "devDependencies": {
+    "sass": "^1.54.8",
     "typescript": "^4.8.2"
+  },
+  "scripts": {
+    "sass": "sass src/scss/:dist/css/ --no-source-map --watch",
+    "watch": "tsc -watch"
   }
 }
