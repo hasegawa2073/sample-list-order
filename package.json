@@ -1,0 +1,7 @@
+{
+  "name": "sample-list-order",
+  "type": "module",
+  "devDependencies": {
+    "typescript": "^4.8.2"
+  }
+}
