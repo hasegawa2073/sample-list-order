@@ -107,4 +107,5 @@ body {
   font-size: 1.6rem;
   color: var(--text-color);
   transition: transform 0.2s linear;
+  user-select: none;
 }
