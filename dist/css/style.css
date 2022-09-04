@@ -70,6 +70,12 @@ body {
 .todo__li.grip .todo__griplines:nth-child(2) {
   transform: translateY(2px);
 }
+.todo__li:hover .todo__griplines:nth-child(1) {
+  transform: translateY(-4px);
+}
+.todo__li:hover .todo__griplines:nth-child(2) {
+  transform: translateY(4px);
+}
 .todo__button {
   padding: 0 20px 0 0;
   background-color: transparent;
@@ -82,6 +88,7 @@ body {
   width: 20px;
   height: 1px;
   background-color: var(--line-color);
+  transition: transform 0.2s ease;
 }
 .todo__griplines:nth-child(1) {
   transform: translateY(-3px);
