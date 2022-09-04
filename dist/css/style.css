@@ -53,11 +53,22 @@ body {
 .todo__li.grip-start {
   background-color: var(--grip-start-color);
 }
+.todo__li:hover .todo__griplines:nth-child(1) {
+  transform: translateY(-4px);
+}
+.todo__li:hover .todo__griplines:nth-child(2) {
+  transform: translateY(4px);
+}
+.todo__li:hover .todo__text {
+  transform: scale(1.018);
+  transform-origin: left center;
+}
 .todo__li.grip {
   background-color: rgba(var(--list-bg-color-rgb), 0.7);
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.25);
   transform: scale(1.025);
   transform-origin: center center;
+  transition: transform 0.1s ease;
   z-index: 100;
 }
 .todo__li.grip::after {
@@ -69,16 +80,6 @@ body {
 }
 .todo__li.grip .todo__griplines:nth-child(2) {
   transform: translateY(2px);
-}
-.todo__li:hover .todo__griplines:nth-child(1) {
-  transform: translateY(-4px);
-}
-.todo__li:hover .todo__griplines:nth-child(2) {
-  transform: translateY(4px);
-}
-.todo__li:hover .todo__text {
-  transform: scale(1.05);
-  transform-origin: left center;
 }
 .todo__button {
   padding: 0 20px 0 0;
