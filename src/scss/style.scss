@@ -78,6 +78,10 @@ body {
           transform: translateY(4px);
         }
       }
+      & .todo__text {
+        transform: scale(1.05);
+        transform-origin: left center;
+      }
     }
   }
   &__button {
@@ -92,7 +96,7 @@ body {
     width: 20px;
     height: 1px;
     background-color: var(--line-color);
-    transition: transform 0.2s ease;
+    transition: transform 0.2s linear;
     &:nth-child(1) {
       transform: translateY(-3px);
     }
@@ -105,5 +109,6 @@ body {
     font-family: var(--base-font-family);
     font-size: 1.6rem;
     color: var(--text-color);
+    transition: transform 0.2s linear;
   }
 }
