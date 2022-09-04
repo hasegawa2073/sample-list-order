@@ -1,12 +1,17 @@
 :root {
   --text-color: #292929;
   --line-color: #606060;
+  --grip-start-color: #c4c4c4;
   --border-color: #cccccc;
   --base-bg-color: #eaeaea;
   --list-bg-color: #fcfcfc;
+  --list-bg-color-rgb: 252, 252, 252;
   --base-font-family: 'Noto Sans JP', sans-serif;
 }
 
+html {
+  font-size: 62.5%;
+}
 body {
   background-color: var(--base-bg-color);
 }
@@ -25,8 +30,6 @@ body {
     display: flex;
     align-items: center;
     padding: 15px 20px 15px 20px;
-    font-family: var(--base-font-family);
-    color: var(--text-color);
     background-color: var(--list-bg-color);
     cursor: pointer;
     &:not(&:last-child)::after {
@@ -44,10 +47,32 @@ body {
     &:last-child {
       border-radius: 0 0 8px 8px;
     }
+    &.grip-start {
+      background-color: var(--grip-start-color);
+    }
+    &.grip {
+      background-color: rgba(var(--list-bg-color-rgb), 0.7);
+      box-shadow: 0 0 20px rgba($color: #000000, $alpha: 0.25);
+      transform: scale(1.025);
+      transform-origin: center center;
+      z-index: 100;
+      &::after {
+        content: '';
+        display: none;
+      }
+      & .todo__griplines {
+        &:nth-child(1) {
+          transform: translateY(-2px);
+        }
+        &:nth-child(2) {
+          transform: translateY(2px);
+        }
+      }
+    }
   }
   &__button {
     padding: 0 20px 0 0;
-    background-color: var(--list-bg-color);
+    background-color: transparent;
     border: none;
     cursor: pointer;
   }
@@ -63,5 +88,11 @@ body {
     &:nth-child(2) {
       transform: translateY(3px);
     }
+  }
+  &__text {
+    margin: 0;
+    font-family: var(--base-font-family);
+    font-size: 1.6rem;
+    color: var(--text-color);
   }
 }
