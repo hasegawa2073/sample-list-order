@@ -12,6 +12,7 @@ document.addEventListener('DOMContentLoaded', function () {
   let startMouseY: number;
   let startTouchX: number;
   let startTouchY: number;
+  let startTop: number;
   let currentMouseX: number;
   let currentMouseY: number;
   let currentTouchX: number;
@@ -20,15 +21,16 @@ document.addEventListener('DOMContentLoaded', function () {
     target.classList.remove('grip-start');
     target.classList.remove('grip');
     target.style.transform = '';
+    target.style.left = '0px';
   };
   todoLists.forEach((list, index, listArray) => {
     list.addEventListener('touchstart', function (e: any) {
       e.preventDefault();
+      const target = e.currentTarget as HTMLElement;
       todo.style.position = 'relative';
       startTimeTouch = e.timeStamp;
       startTouchX = e.touches[0].clientX;
       startTouchY = e.touches[0].clientY;
-      const target = e.currentTarget as Element;
       const listHeightArray: Array<number> = new Array();
       listArray.forEach((value, index, array) => {
         const list = value as HTMLElement;
@@ -56,6 +58,7 @@ document.addEventListener('DOMContentLoaded', function () {
         list.style.position = 'absolute';
         list.style.width = '90%';
         list.style.top = `${positionTop(listHeightArray, index)}px`;
+        startTop = parseInt(target.style.top);
       });
       // タッチ時にgrip-startクラスを付与してリアクションを返す
       target.classList.add('grip-start');
@@ -96,9 +99,11 @@ document.addEventListener('DOMContentLoaded', function () {
       const diffTouchX = currentTouchX - startTouchX;
       const diffTouchY = currentTouchY - startTouchY;
       const target = e.currentTarget as HTMLElement;
+      const currentTop = startTop + diffTouchY;
       // リストを掴んだ状態でtouchmoveしてるとき
       if (target.classList.contains('grip')) {
-        target.style.transform = `translate(${diffTouchX}px, ${diffTouchY}px)`;
+        target.style.top = `${currentTop}px`;
+        target.style.left = `${diffTouchX}px`;
       }
     });
     list.addEventListener('mousemove', function (e: any) {

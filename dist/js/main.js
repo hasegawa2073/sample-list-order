@@ -13,6 +13,7 @@ document.addEventListener('DOMContentLoaded', function () {
     let startMouseY;
     let startTouchX;
     let startTouchY;
+    let startTop;
     let currentMouseX;
     let currentMouseY;
     let currentTouchX;
@@ -21,15 +22,16 @@ document.addEventListener('DOMContentLoaded', function () {
         target.classList.remove('grip-start');
         target.classList.remove('grip');
         target.style.transform = '';
+        target.style.left = '0px';
     };
     todoLists.forEach((list, index, listArray) => {
         list.addEventListener('touchstart', function (e) {
             e.preventDefault();
+            const target = e.currentTarget;
             todo.style.position = 'relative';
             startTimeTouch = e.timeStamp;
             startTouchX = e.touches[0].clientX;
             startTouchY = e.touches[0].clientY;
-            const target = e.currentTarget;
             const listHeightArray = new Array();
             listArray.forEach((value, index, array) => {
                 const list = value;
@@ -54,6 +56,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 list.style.position = 'absolute';
                 list.style.width = '90%';
                 list.style.top = `${positionTop(listHeightArray, index)}px`;
+                startTop = parseInt(target.style.top);
             });
             // タッチ時にgrip-startクラスを付与してリアクションを返す
             target.classList.add('grip-start');
@@ -94,9 +97,11 @@ document.addEventListener('DOMContentLoaded', function () {
             const diffTouchX = currentTouchX - startTouchX;
             const diffTouchY = currentTouchY - startTouchY;
             const target = e.currentTarget;
+            const currentTop = startTop + diffTouchY;
             // リストを掴んだ状態でtouchmoveしてるとき
             if (target.classList.contains('grip')) {
-                target.style.transform = `translate(${diffTouchX}px, ${diffTouchY}px)`;
+                target.style.top = `${currentTop}px`;
+                target.style.left = `${diffTouchX}px`;
             }
         });
         list.addEventListener('mousemove', function (e) {
