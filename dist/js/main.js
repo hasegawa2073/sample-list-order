@@ -9,8 +9,12 @@ document.addEventListener('DOMContentLoaded', function () {
     let endTimeTouch;
     let startMouseX;
     let startMouseY;
+    let startTouchX;
+    let startTouchY;
     let currentMouseX;
     let currentMouseY;
+    let currentTouchX;
+    let currentTouchY;
     const defaultStyle = (target) => {
         target.classList.remove('grip-start');
         target.classList.remove('grip');
@@ -20,6 +24,8 @@ document.addEventListener('DOMContentLoaded', function () {
         list.addEventListener('touchstart', function (e) {
             e.preventDefault();
             startTimeTouch = e.timeStamp;
+            startTouchX = e.touches[0].clientX;
+            startTouchY = e.touches[0].clientY;
             const target = e.currentTarget;
             // タッチ時にgrip-startクラスを付与してリアクションを返す
             target.classList.add('grip-start');
@@ -54,6 +60,22 @@ document.addEventListener('DOMContentLoaded', function () {
                 target.classList.add('grip');
             });
         });
+        list.addEventListener('touchmove', function (e) {
+            currentTouchX = e.touches[0].clientX;
+            currentTouchY = e.touches[0].clientY;
+            const diffTouchX = currentTouchX - startTouchX;
+            const diffTouchY = currentTouchY - startTouchY;
+            const target = e.currentTarget;
+            listArray.forEach((value) => {
+                const list = value;
+                const listY = String(Math.floor(value.getBoundingClientRect().top));
+                // list.style.order = listY;
+            });
+            // リストを掴んだ状態でtouchmoveしてるとき
+            if (target.classList.contains('grip')) {
+                target.style.transform = `translate(${diffTouchX}px, ${diffTouchY}px)`;
+            }
+        });
         list.addEventListener('mousemove', function (e) {
             currentMouseX = e.clientX;
             currentMouseY = e.clientY;
@@ -65,7 +87,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 const listY = String(Math.floor(value.getBoundingClientRect().top));
                 list.style.order = listY;
             });
-            // リストを掴んだ状態mousemoveしてるとき
+            // リストを掴んだ状態でmousemoveしてるとき
             if (target.classList.contains('grip')) {
                 target.style.transform = `translate(${diffMouseX}px, ${diffMouseY}px)`;
             }
