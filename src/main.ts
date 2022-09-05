@@ -1,4 +1,5 @@
 document.addEventListener('DOMContentLoaded', function () {
+  const todo = document.querySelector('.todo__ul');
   const todoLists = document.querySelectorAll('.todo__li');
   const gripDelay: number = 100;
   let startTimeMousedown: number;
@@ -7,9 +8,10 @@ document.addEventListener('DOMContentLoaded', function () {
   let startMouseY: number;
   let currentMouseX: number;
   let currentMouseY: number;
-  const defaultStyle = (target: Element) => {
+  const defaultStyle = (target: HTMLElement) => {
     target.classList.remove('grip-start');
     target.classList.remove('grip');
+    target.style.transform = '';
   };
   todoLists.forEach((list, index, listArray) => {
     list.addEventListener('mousedown', function (e: any) {
@@ -44,7 +46,6 @@ document.addEventListener('DOMContentLoaded', function () {
         );
         list.style.order = listY;
       });
-
       // リストを掴んだ状態mousemoveしてるとき
       if (target.classList.contains('grip')) {
         target.style.transform = `translate(${diffMouseX}px, ${diffMouseY}px)`;
@@ -56,18 +57,36 @@ document.addEventListener('DOMContentLoaded', function () {
       let timeDiffDelay = gripDelay - timeMousedown;
       const target = e.currentTarget as HTMLElement;
       defaultStyle(target);
-      target.style.transform = '';
       // リストが浮き上がるアニメーションが始まる前にマウスの押下をやめたとき
       if (timeMousedown < gripDelay) {
         setTimeout(() => {
           defaultStyle(target);
         }, timeDiffDelay + 10);
       }
+      const listOrderMap = new Map();
+      const listOrderArray = new Array();
+      listArray.forEach((value) => {
+        const list = value as HTMLElement;
+        const listOrder: number = Number(list.style.order);
+        listOrderMap.set(list, listOrder);
+        listOrderArray.push(listOrder);
+      });
+      const smallestOrder: number = Math.min(...listOrderArray);
+      const biggestOrder: number = Math.max(...listOrderArray);
+      listOrderMap.forEach((value, key) => {
+        // orderが最小のリストはTodoのDOMの最初の要素にする
+        if (value === smallestOrder) {
+          todo?.prepend(key);
+        }
+        // orderが最大のリストはTodoのDOMの最後の要素にする
+        if (value === biggestOrder) {
+          todo?.append(key);
+        }
+      });
     });
     list.addEventListener('mouseleave', function (e) {
       const target = e.currentTarget as HTMLElement;
       defaultStyle(target);
-      target.style.transform = '';
     });
   });
 });

@@ -1,5 +1,6 @@
 "use strict";
 document.addEventListener('DOMContentLoaded', function () {
+    const todo = document.querySelector('.todo__ul');
     const todoLists = document.querySelectorAll('.todo__li');
     const gripDelay = 100;
     let startTimeMousedown;
@@ -11,6 +12,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const defaultStyle = (target) => {
         target.classList.remove('grip-start');
         target.classList.remove('grip');
+        target.style.transform = '';
     };
     todoLists.forEach((list, index, listArray) => {
         list.addEventListener('mousedown', function (e) {
@@ -54,18 +56,36 @@ document.addEventListener('DOMContentLoaded', function () {
             let timeDiffDelay = gripDelay - timeMousedown;
             const target = e.currentTarget;
             defaultStyle(target);
-            target.style.transform = '';
             // リストが浮き上がるアニメーションが始まる前にマウスの押下をやめたとき
             if (timeMousedown < gripDelay) {
                 setTimeout(() => {
                     defaultStyle(target);
                 }, timeDiffDelay + 10);
             }
+            const listOrderMap = new Map();
+            const listOrderArray = new Array();
+            listArray.forEach((value) => {
+                const list = value;
+                const listOrder = Number(list.style.order);
+                listOrderMap.set(list, listOrder);
+                listOrderArray.push(listOrder);
+            });
+            const smallestOrder = Math.min(...listOrderArray);
+            const biggestOrder = Math.max(...listOrderArray);
+            listOrderMap.forEach((value, key) => {
+                // orderが最小のリストはTodoのDOMの最初の要素にする
+                if (value === smallestOrder) {
+                    todo?.prepend(key);
+                }
+                // orderが最大のリストはTodoのDOMの最後の要素にする
+                if (value === biggestOrder) {
+                    todo?.append(key);
+                }
+            });
         });
         list.addEventListener('mouseleave', function (e) {
             const target = e.currentTarget;
             defaultStyle(target);
-            target.style.transform = '';
         });
     });
 });
