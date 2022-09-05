@@ -128,6 +128,22 @@ document.addEventListener('DOMContentLoaded', function () {
                 });
                 return order;
             }
+            // 渡されたリストの配列をtopの値順にして新しい配列を返す関数
+            function orderListArrayFn(listArray) {
+                const orderListArray = new Array();
+                let listTopArray = new Array();
+                listArray.forEach((value) => {
+                    const list = value;
+                    const listTop = parseInt(list.style.top);
+                    listTopArray[listTop] = list;
+                });
+                for (let key in listTopArray) {
+                    orderListArray.push(listTopArray[key]);
+                }
+                return orderListArray;
+            }
+            console.log(orderListArrayFn(listArray));
+            orderListArrayFn(listArray);
         });
         list.addEventListener('mousemove', function (e) {
             currentMouseX = e.clientX;
