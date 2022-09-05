@@ -45,7 +45,7 @@ document.addEventListener('DOMContentLoaded', function () {
             });
             // リストを掴んだ状態mousemoveしてるとき
             if (target.classList.contains('grip')) {
-                target.style.transform = `translateY(${diffMouseY}px)`;
+                target.style.transform = `translate(${diffMouseX}px, ${diffMouseY}px)`;
             }
         });
         list.addEventListener('mouseup', function (e) {
