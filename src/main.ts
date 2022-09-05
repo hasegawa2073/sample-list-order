@@ -14,6 +14,22 @@ document.addEventListener('DOMContentLoaded', function () {
     target.style.transform = '';
   };
   todoLists.forEach((list, index, listArray) => {
+    list.addEventListener('touchstart', function (e) {
+      e.preventDefault();
+      const target = e.currentTarget as Element;
+      target.classList.add('grip-start');
+      const removeGripStart = new Promise((resolve, reject) => {
+        setTimeout(() => {
+          target.classList.remove('grip-start');
+          resolve(target as Element);
+        }, gripDelay);
+      });
+      // 一定時間(gripDelay)以上グリップしていたら本格的にグリップ開始
+      removeGripStart.then((data) => {
+        const target = data as Element;
+        target.classList.add('grip');
+      });
+    });
     list.addEventListener('mousedown', function (e: any) {
       startTimeMousedown = e.timeStamp;
       startMouseX = e.clientX;
