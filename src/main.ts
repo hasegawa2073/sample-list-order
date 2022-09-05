@@ -23,6 +23,34 @@ document.addEventListener('DOMContentLoaded', function () {
     target.style.transform = '';
     target.style.left = '0px';
   };
+  // 自リストより上にあるリストのheightをすべて足して返す(topになる値を返す)
+  function positionTop(heightArray: Array<number>, index: number) {
+    const listHeightBeforeArray: Array<number> = new Array();
+    heightArray.forEach((height: number, me) => {
+      if (index === me) {
+        return;
+      }
+      listHeightBeforeArray.push(height);
+    });
+    const listHeightSum: number = listHeightBeforeArray.reduce((accu, curr) => {
+      return accu + curr;
+    }, 0);
+    return listHeightSum;
+  }
+  // 渡されたリストの配列をtopの値順にして新しい配列を返す関数
+  function orderListArrayFn(listArray: Array<any>) {
+    const orderListArray = new Array();
+    let listTopArray = new Array();
+    listArray.forEach((value) => {
+      const list = value as HTMLElement;
+      const listTop = parseInt(list.style.top);
+      listTopArray[listTop] = list;
+    });
+    for (let key in listTopArray) {
+      orderListArray.push(listTopArray[key]);
+    }
+    return orderListArray;
+  }
   todoLists.forEach((list, index, listArray) => {
     list.addEventListener('touchstart', function (e: any) {
       e.preventDefault();
@@ -38,23 +66,6 @@ document.addEventListener('DOMContentLoaded', function () {
         const listBottom: number = list.getBoundingClientRect().bottom;
         const listHeight = listBottom - listTop;
         listHeightArray.push(listHeight);
-        // 自リストより上にあるリストのheightをすべて足して返す(topになる値を返す)
-        function positionTop(heightArray: Array<number>, index: number) {
-          const listHeightBeforeArray: Array<number> = new Array();
-          heightArray.forEach((height: number, me) => {
-            if (index === me) {
-              return;
-            }
-            listHeightBeforeArray.push(height);
-          });
-          const listHeightSum: number = listHeightBeforeArray.reduce(
-            (accu, curr) => {
-              return accu + curr;
-            },
-            0
-          );
-          return listHeightSum;
-        }
         list.style.position = 'absolute';
         list.style.width = '90%';
         list.style.top = `${positionTop(listHeightArray, index)}px`;
@@ -106,11 +117,6 @@ document.addEventListener('DOMContentLoaded', function () {
         const listTop: number = parseInt(list.style.top);
         listTopArray.push(listTop);
       });
-      // リストを掴んだ状態でtouchmoveしてるとき
-      if (target.classList.contains('grip')) {
-        target.style.top = `${currentTop}px`;
-        target.style.left = `${diffTouchX}px`;
-      }
       // 与えられた数値を昇順にする関数
       function ascending(val1: number, val2: number) {
         if (val1 < val2) {
@@ -130,22 +136,22 @@ document.addEventListener('DOMContentLoaded', function () {
         });
         return order;
       }
-      // 渡されたリストの配列をtopの値順にして新しい配列を返す関数
-      function orderListArrayFn(listArray: Array<any>) {
-        const orderListArray = new Array();
-        let listTopArray = new Array();
-        listArray.forEach((value) => {
-          const list = value as HTMLElement;
-          const listTop = parseInt(list.style.top);
-          listTopArray[listTop] = list;
-        });
-        for (let key in listTopArray) {
-          orderListArray.push(listTopArray[key]);
-        }
-        return orderListArray;
-      }
       console.log(orderListArrayFn(listArray as any));
-      orderListArrayFn(listArray as any);
+      const listHeightArray: Array<number> = new Array();
+      orderListArrayFn(listArray as any).forEach((value, index) => {
+        const list = value as HTMLElement;
+        const listTop: number = list.getBoundingClientRect().top;
+        const listBottom: number = list.getBoundingClientRect().bottom;
+        const listHeight = listBottom - listTop;
+        listHeightArray.push(listHeight);
+        list.style.top = `${positionTop(listHeightArray, index)}px`;
+      });
+      console.log(listHeightArray);
+      // リストを掴んだ状態でtouchmoveしてるとき
+      if (target.classList.contains('grip')) {
+        target.style.top = `${currentTop}px`;
+        target.style.left = `${diffTouchX}px`;
+      }
     });
     list.addEventListener('mousemove', function (e: any) {
       currentMouseX = e.clientX;

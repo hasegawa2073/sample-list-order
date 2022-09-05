@@ -24,6 +24,34 @@ document.addEventListener('DOMContentLoaded', function () {
         target.style.transform = '';
         target.style.left = '0px';
     };
+    // 自リストより上にあるリストのheightをすべて足して返す(topになる値を返す)
+    function positionTop(heightArray, index) {
+        const listHeightBeforeArray = new Array();
+        heightArray.forEach((height, me) => {
+            if (index === me) {
+                return;
+            }
+            listHeightBeforeArray.push(height);
+        });
+        const listHeightSum = listHeightBeforeArray.reduce((accu, curr) => {
+            return accu + curr;
+        }, 0);
+        return listHeightSum;
+    }
+    // 渡されたリストの配列をtopの値順にして新しい配列を返す関数
+    function orderListArrayFn(listArray) {
+        const orderListArray = new Array();
+        let listTopArray = new Array();
+        listArray.forEach((value) => {
+            const list = value;
+            const listTop = parseInt(list.style.top);
+            listTopArray[listTop] = list;
+        });
+        for (let key in listTopArray) {
+            orderListArray.push(listTopArray[key]);
+        }
+        return orderListArray;
+    }
     todoLists.forEach((list, index, listArray) => {
         list.addEventListener('touchstart', function (e) {
             e.preventDefault();
@@ -39,20 +67,6 @@ document.addEventListener('DOMContentLoaded', function () {
                 const listBottom = list.getBoundingClientRect().bottom;
                 const listHeight = listBottom - listTop;
                 listHeightArray.push(listHeight);
-                // 自リストより上にあるリストのheightをすべて足して返す(topになる値を返す)
-                function positionTop(heightArray, index) {
-                    const listHeightBeforeArray = new Array();
-                    heightArray.forEach((height, me) => {
-                        if (index === me) {
-                            return;
-                        }
-                        listHeightBeforeArray.push(height);
-                    });
-                    const listHeightSum = listHeightBeforeArray.reduce((accu, curr) => {
-                        return accu + curr;
-                    }, 0);
-                    return listHeightSum;
-                }
                 list.style.position = 'absolute';
                 list.style.width = '90%';
                 list.style.top = `${positionTop(listHeightArray, index)}px`;
@@ -104,11 +118,6 @@ document.addEventListener('DOMContentLoaded', function () {
                 const listTop = parseInt(list.style.top);
                 listTopArray.push(listTop);
             });
-            // リストを掴んだ状態でtouchmoveしてるとき
-            if (target.classList.contains('grip')) {
-                target.style.top = `${currentTop}px`;
-                target.style.left = `${diffTouchX}px`;
-            }
             // 与えられた数値を昇順にする関数
             function ascending(val1, val2) {
                 if (val1 < val2) {
@@ -128,22 +137,22 @@ document.addEventListener('DOMContentLoaded', function () {
                 });
                 return order;
             }
-            // 渡されたリストの配列をtopの値順にして新しい配列を返す関数
-            function orderListArrayFn(listArray) {
-                const orderListArray = new Array();
-                let listTopArray = new Array();
-                listArray.forEach((value) => {
-                    const list = value;
-                    const listTop = parseInt(list.style.top);
-                    listTopArray[listTop] = list;
-                });
-                for (let key in listTopArray) {
-                    orderListArray.push(listTopArray[key]);
-                }
-                return orderListArray;
-            }
             console.log(orderListArrayFn(listArray));
-            orderListArrayFn(listArray);
+            const listHeightArray = new Array();
+            orderListArrayFn(listArray).forEach((value, index) => {
+                const list = value;
+                const listTop = list.getBoundingClientRect().top;
+                const listBottom = list.getBoundingClientRect().bottom;
+                const listHeight = listBottom - listTop;
+                listHeightArray.push(listHeight);
+                list.style.top = `${positionTop(listHeightArray, index)}px`;
+            });
+            console.log(listHeightArray);
+            // リストを掴んだ状態でtouchmoveしてるとき
+            if (target.classList.contains('grip')) {
+                target.style.top = `${currentTop}px`;
+                target.style.left = `${diffTouchX}px`;
+            }
         });
         list.addEventListener('mousemove', function (e) {
             currentMouseX = e.clientX;
