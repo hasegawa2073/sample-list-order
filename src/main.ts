@@ -11,7 +11,7 @@ document.addEventListener('DOMContentLoaded', function () {
     target.classList.remove('grip-start');
     target.classList.remove('grip');
   };
-  todoLists.forEach((list) => {
+  todoLists.forEach((list, index, listArray) => {
     list.addEventListener('mousedown', function (e: any) {
       startTimeMousedown = e.timeStamp;
       startMouseX = e.clientX;
@@ -25,6 +25,7 @@ document.addEventListener('DOMContentLoaded', function () {
           resolve(target as Element);
         }, gripDelay);
       });
+      // 一定時間(gripDelay)以上グリップしていたら本格的にグリップ開始
       removeGripStart.then((data) => {
         const target = data as Element;
         target.classList.add('grip');
@@ -36,6 +37,14 @@ document.addEventListener('DOMContentLoaded', function () {
       const diffMouseX = currentMouseX - startMouseX;
       const diffMouseY = currentMouseY - startMouseY;
       const target = e.currentTarget as HTMLElement;
+      listArray.forEach((value) => {
+        const list = value as HTMLElement;
+        const listY: string = String(
+          Math.floor(value.getBoundingClientRect().top)
+        );
+        list.style.order = listY;
+      });
+
       // リストを掴んだ状態mousemoveしてるとき
       if (target.classList.contains('grip')) {
         target.style.transform = `translateY(${diffMouseY}px)`;
