@@ -1,7 +1,7 @@
 "use strict";
 document.addEventListener('DOMContentLoaded', function () {
     const todoLists = document.querySelectorAll('.todo__li');
-    const gripDelay = 200;
+    const gripDelay = 100;
     let startTimeMousedown;
     let endTimeMousedown;
     let startMouseX;

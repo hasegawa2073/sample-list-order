@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', function () {
   const todoLists = document.querySelectorAll('.todo__li');
-  const gripDelay: number = 200;
+  const gripDelay: number = 100;
   let startTimeMousedown: number;
   let endTimeMousedown: number;
   let startMouseX: number;
