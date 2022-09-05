@@ -1,5 +1,7 @@
 document.addEventListener('DOMContentLoaded', function () {
-  const todo = document.querySelector('.todo__ul');
+  const todo = document.querySelector('.todo__ul') as HTMLElement;
+  const todoMarginTop: number = todo.getBoundingClientRect().top;
+  const todoMarginTopInt: number = Math.floor(todoMarginTop);
   const todoLists = document.querySelectorAll('.todo__li');
   const gripDelay: number = 100;
   let startTimeMousedown: number;
@@ -22,10 +24,39 @@ document.addEventListener('DOMContentLoaded', function () {
   todoLists.forEach((list, index, listArray) => {
     list.addEventListener('touchstart', function (e: any) {
       e.preventDefault();
+      todo.style.position = 'relative';
       startTimeTouch = e.timeStamp;
       startTouchX = e.touches[0].clientX;
       startTouchY = e.touches[0].clientY;
       const target = e.currentTarget as Element;
+      const listHeightArray: Array<number> = new Array();
+      listArray.forEach((value, index, array) => {
+        const list = value as HTMLElement;
+        const listTop: number = list.getBoundingClientRect().top;
+        const listBottom: number = list.getBoundingClientRect().bottom;
+        const listHeight = listBottom - listTop;
+        listHeightArray.push(listHeight);
+        // 自リストより上にあるリストのheightをすべて足して返す(topになる値を返す)
+        function positionTop(heightArray: Array<number>, index: number) {
+          const listHeightBeforeArray: Array<number> = new Array();
+          heightArray.forEach((height: number, me) => {
+            if (index === me) {
+              return;
+            }
+            listHeightBeforeArray.push(height);
+          });
+          const listHeightSum: number = listHeightBeforeArray.reduce(
+            (accu, curr) => {
+              return accu + curr;
+            },
+            0
+          );
+          return listHeightSum;
+        }
+        list.style.position = 'absolute';
+        list.style.width = '90%';
+        list.style.top = `${positionTop(listHeightArray, index)}px`;
+      });
       // タッチ時にgrip-startクラスを付与してリアクションを返す
       target.classList.add('grip-start');
       const removeGripStart = new Promise((resolve, reject) => {
@@ -65,13 +96,6 @@ document.addEventListener('DOMContentLoaded', function () {
       const diffTouchX = currentTouchX - startTouchX;
       const diffTouchY = currentTouchY - startTouchY;
       const target = e.currentTarget as HTMLElement;
-      listArray.forEach((value) => {
-        const list = value as HTMLElement;
-        const listY: string = String(
-          Math.floor(value.getBoundingClientRect().top)
-        );
-        // list.style.order = listY;
-      });
       // リストを掴んだ状態でtouchmoveしてるとき
       if (target.classList.contains('grip')) {
         target.style.transform = `translate(${diffTouchX}px, ${diffTouchY}px)`;
