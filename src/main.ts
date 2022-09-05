@@ -17,6 +17,7 @@ document.addEventListener('DOMContentLoaded', function () {
     list.addEventListener('touchstart', function (e) {
       e.preventDefault();
       const target = e.currentTarget as Element;
+      // タッチ時にgrip-startクラスを付与してリアクションを返す
       target.classList.add('grip-start');
       const removeGripStart = new Promise((resolve, reject) => {
         setTimeout(() => {
@@ -99,6 +100,10 @@ document.addEventListener('DOMContentLoaded', function () {
           todo?.append(key);
         }
       });
+    });
+    list.addEventListener('touchend', function (e) {
+      const target = e.currentTarget as HTMLElement;
+      defaultStyle(target);
     });
     list.addEventListener('mouseleave', function (e) {
       const target = e.currentTarget as HTMLElement;
