@@ -4,6 +4,8 @@ document.addEventListener('DOMContentLoaded', function () {
   const gripDelay: number = 100;
   let startTimeMousedown: number;
   let endTimeMousedown: number;
+  let startTimeTouch: number;
+  let endTimeTouch: number;
   let startMouseX: number;
   let startMouseY: number;
   let currentMouseX: number;
@@ -16,6 +18,7 @@ document.addEventListener('DOMContentLoaded', function () {
   todoLists.forEach((list, index, listArray) => {
     list.addEventListener('touchstart', function (e) {
       e.preventDefault();
+      startTimeTouch = e.timeStamp;
       const target = e.currentTarget as Element;
       // タッチ時にgrip-startクラスを付与してリアクションを返す
       target.classList.add('grip-start');
@@ -102,6 +105,14 @@ document.addEventListener('DOMContentLoaded', function () {
       });
     });
     list.addEventListener('touchend', function (e) {
+      endTimeTouch = e.timeStamp;
+      const timeTouch: number = endTimeTouch - startTimeTouch;
+      const timeDiffDelay: number = gripDelay - timeTouch;
+      if (timeTouch < gripDelay) {
+        setTimeout(() => {
+          defaultStyle(target);
+        }, timeDiffDelay + 50);
+      }
       const target = e.currentTarget as HTMLElement;
       defaultStyle(target);
     });
