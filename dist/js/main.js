@@ -98,10 +98,35 @@ document.addEventListener('DOMContentLoaded', function () {
             const diffTouchY = currentTouchY - startTouchY;
             const target = e.currentTarget;
             const currentTop = startTop + diffTouchY;
+            const listTopArray = new Array();
+            listArray.forEach((value) => {
+                const list = value;
+                const listTop = parseInt(list.style.top);
+                listTopArray.push(listTop);
+            });
             // リストを掴んだ状態でtouchmoveしてるとき
             if (target.classList.contains('grip')) {
                 target.style.top = `${currentTop}px`;
                 target.style.left = `${diffTouchX}px`;
+            }
+            // 与えられた数値を昇順にする関数
+            function ascending(val1, val2) {
+                if (val1 < val2) {
+                    return -1;
+                }
+                if (val1 > val2) {
+                    return 1;
+                }
+                return 0;
+            }
+            listTopArray.sort(ascending);
+            // 自リストがtopの値で上から何番目かを返す関数
+            function listTopOrder(listTopArray, currentTop) {
+                listTopArray.sort(ascending);
+                let order = listTopArray.findIndex((value) => {
+                    return currentTop - 10 <= value && value <= currentTop + 10;
+                });
+                return order;
             }
         });
         list.addEventListener('mousemove', function (e) {
