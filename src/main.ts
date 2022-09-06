@@ -151,6 +151,12 @@ document.addEventListener('DOMContentLoaded', function () {
         const listHeight = listBottom - listTop;
         listHeightArray.push(listHeight);
         list.style.top = `${positionTop(listHeightArray, index)}px`;
+        // 掴んでいるリストが先頭(0番目)に位置しているとき
+        if (listTopOrder(listTopArray, currentTop) === 0) {
+          const positionTopPlusFirstList =
+            positionTop(listHeightArray, index) + MyListHeight(target);
+          list.style.top = `${positionTopPlusFirstList}px`;
+        }
       });
       // リストを掴んだ状態でtouchmoveしてるとき
       if (target.classList.contains('grip')) {
