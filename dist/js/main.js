@@ -137,7 +137,13 @@ document.addEventListener('DOMContentLoaded', function () {
                 });
                 return order;
             }
-            console.log(orderListArrayFn(listArray));
+            // 自リストのheightを返す関数
+            function MyListHeight(list) {
+                const listTop = list.getBoundingClientRect().top;
+                const listBottom = list.getBoundingClientRect().bottom;
+                const listHeight = listBottom - listTop;
+                return listHeight;
+            }
             const listHeightArray = new Array();
             orderListArrayFn(listArray).forEach((value, index) => {
                 const list = value;
@@ -147,7 +153,6 @@ document.addEventListener('DOMContentLoaded', function () {
                 listHeightArray.push(listHeight);
                 list.style.top = `${positionTop(listHeightArray, index)}px`;
             });
-            console.log(listHeightArray);
             // リストを掴んだ状態でtouchmoveしてるとき
             if (target.classList.contains('grip')) {
                 target.style.top = `${currentTop}px`;
