@@ -70,8 +70,8 @@ document.addEventListener('DOMContentLoaded', function () {
         }
         return orderListArray;
     }
-    // 渡されたリストの配列をtopの値順にしてDOMを書き換える関数
-    function orderListDOM(listArray) {
+    // 渡されたリストの配列をtopの値順にして配列で返す関数
+    function orderListArray(listArray) {
         let orderListArray = new Array();
         let listTopMap = new Map();
         listArray.forEach((value) => {
@@ -83,7 +83,11 @@ document.addEventListener('DOMContentLoaded', function () {
         newListTopMap.forEach((value) => {
             orderListArray.push(value);
         });
-        orderListArray.forEach((value) => {
+        return orderListArray;
+    }
+    // 渡されたリストの配列順にDOMを書き換える関数
+    function orderListDOM(listArray) {
+        orderListArray(listArray).forEach((value) => {
             todo.append(value);
         });
     }
