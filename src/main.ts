@@ -37,6 +37,24 @@ document.addEventListener('DOMContentLoaded', function () {
     }, 0);
     return listHeightSum;
   }
+  // 与えられた数値を昇順にする関数
+  function ascending(val1: number, val2: number) {
+    if (val1 < val2) {
+      return -1;
+    }
+    if (val1 > val2) {
+      return 1;
+    }
+    return 0;
+  }
+  // 自リストがtopの値で上から何番目かを返す関数
+  function listTopOrder(listTopArray: Array<number>, currentTop: number) {
+    listTopArray.sort(ascending);
+    let order = listTopArray.findIndex((value) => {
+      return currentTop - 10 <= value && value <= currentTop + 10;
+    });
+    return order;
+  }
   // 渡されたリストの配列をtopの値順にして新しい配列を返す関数
   function orderListArrayFn(listArray: Array<any>) {
     const orderListArray = new Array();
@@ -51,7 +69,26 @@ document.addEventListener('DOMContentLoaded', function () {
     }
     return orderListArray;
   }
+  // 渡されたリストの配列をtopの値順にしてDOMを書き換える関数
+  function orderListDOM(listArray: Array<any>) {
+    let orderListArray = new Array();
+    let listTopMap = new Map();
+    listArray.forEach((value) => {
+      const list = value as HTMLElement;
+      const listTop = parseInt(list.style.top);
+      listTopMap.set(listTop, list);
+    });
+    const newListTopMap = new Map([...listTopMap].sort((a, b) => a[0] - b[0]));
+    newListTopMap.forEach((value) => {
+      orderListArray.push(value);
+    });
+    orderListArray.forEach((value) => {
+      todo.append(value);
+    });
+  }
   todoLists.forEach((list, index, listArray) => {
+    let listArray2 = new Array();
+    let listTopArray2 = new Array();
     list.addEventListener('touchstart', function (e: any) {
       e.preventDefault();
       const target = e.currentTarget as HTMLElement;
@@ -105,6 +142,8 @@ document.addEventListener('DOMContentLoaded', function () {
       });
     });
     list.addEventListener('touchmove', function (e: any) {
+      listArray2 = [];
+      listTopArray2 = [];
       currentTouchX = e.touches[0].clientX;
       currentTouchY = e.touches[0].clientY;
       const diffTouchX = currentTouchX - startTouchX;
@@ -116,26 +155,10 @@ document.addEventListener('DOMContentLoaded', function () {
         const list = value as HTMLElement;
         const listTop: number = parseInt(list.style.top);
         listTopArray.push(listTop);
+        listTopArray2.push(listTop);
       });
-      // 与えられた数値を昇順にする関数
-      function ascending(val1: number, val2: number) {
-        if (val1 < val2) {
-          return -1;
-        }
-        if (val1 > val2) {
-          return 1;
-        }
-        return 0;
-      }
       listTopArray.sort(ascending);
-      // 自リストがtopの値で上から何番目かを返す関数
-      function listTopOrder(listTopArray: Array<number>, currentTop: number) {
-        listTopArray.sort(ascending);
-        let order = listTopArray.findIndex((value) => {
-          return currentTop - 10 <= value && value <= currentTop + 10;
-        });
-        return order;
-      }
+      listTopArray2.sort(ascending);
       // 自リストのheightを返す関数
       function MyListHeight(list: HTMLElement) {
         const listTop: number = list.getBoundingClientRect().top;
@@ -226,6 +249,7 @@ document.addEventListener('DOMContentLoaded', function () {
       }
       const target = e.currentTarget as HTMLElement;
       defaultStyle(target);
+      orderListDOM(listArray as any);
     });
     list.addEventListener('mouseleave', function (e) {
       const target = e.currentTarget as HTMLElement;
